@@ -1,0 +1,34 @@
+{
+  // Emit configuration for the Node-side plugin entry.
+  //
+  // The base tsconfig is type-check only (`noEmit`), which is what the test
+  // run and editors want. Publishing needs the opposite: real JavaScript, so
+  // that `exports["."]` can point at `lib/index.js`. Node refuses to strip
+  // types from any file under node_modules, so a package whose entry is a
+  // `.ts` file cannot be imported once installed as a dependency.
+  //
+  // `rewriteRelativeImportExtensions` (TypeScript 5.7+) rewrites the `.ts`
+  // specifiers in the sources to `.js` on emit, so the imports keep their
+  // current form and no source file has to change.
+  //
+  // Only the Node-side entry is compiled here. `lib/client.js` is the browser
+  // bundle and is produced separately; tests and the CLI are not published as
+  // compiled output.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./lib",
+    "rootDir": "./src",
+    "rewriteRelativeImportExtensions": true
+  },
+  "include": [
+    "src/index.ts",
+    "src/boot-script.ts",
+    "src/types.ts",
+    "src/installer.ts"
+  ],
+  "exclude": ["tests", "src/client", "src/bin"]
+}

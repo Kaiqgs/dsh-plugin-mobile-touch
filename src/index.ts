@@ -40,7 +40,20 @@ export const name = 'plugin-mobile-touch'
 export function apply(ctx: Context, config: Config = {}): void {
   if (config.disabled) return
 
-  ctx.on('webserver/index-inject', (table: IndexInjection[]) => {
+  // `webserver/index-inject` is declared on Cordis' `Events` by
+  // @deepseek-ai/dsh-host-webserver, which this package deliberately does not
+  // depend on. Re-declaring it here would have to mirror that package's wider
+  // `IndexInjection` union exactly, because interface merging requires
+  // identical member types, and would break the moment a variant is added
+  // upstream.
+  // A local view of `ctx.on` keeps the listener typed without claiming
+  // ownership of an event this package does not define.
+  const onIndexInject = ctx.on as unknown as (
+    event: 'webserver/index-inject',
+    listener: (table: IndexInjection[]) => void,
+  ) => void
+
+  onIndexInject('webserver/index-inject', (table: IndexInjection[]) => {
     try {
       table.push(bootTouchInjection())
     } catch (error) {

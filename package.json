@@ -5,8 +5,8 @@
   "author": "AnonyJcy",
   "license": "MIT",
   "type": "module",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "bin": {
     "dsh-touch-adapt": "bin/cli.js",
     "dsh-mobile-touch": "bin/cli.js"
@@ -24,16 +24,16 @@
   "homepage": "https://github.com/AnonyJcy/dsh-plugin-mobile-touch#readme",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "default": "./src/index.ts"
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
     },
     "./client": {
       "types": "./lib/client.js",
       "default": "./lib/client.js"
     },
     "./installer": {
-      "types": "./src/installer.ts",
-      "default": "./src/installer.ts"
+      "types": "./lib/installer.d.ts",
+      "default": "./lib/installer.js"
     },
     "./package.json": "./package.json"
   },
@@ -66,15 +66,18 @@
     "web-ui"
   ],
   "peerDependencies": {
-    "@deepseek-ai/cordis": ">=3.0.0"
+    "@deepseek-ai/cordis": ">=4.0.0"
   },
   "devDependencies": {
-    "@deepseek-ai/cordis": "^3.0.0",
+    "@deepseek-ai/cordis": "^4.0.2",
+    "@types/node": "^22.0.0",
     "jsdom": "^29.1.1",
     "typescript": "^5.8.0",
     "vitest": "^4.1.0"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run build",
     "test": "vitest run",
     "status": "node bin/cli.js status",
     "install:plugin": "node bin/cli.js install",
